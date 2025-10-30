@@ -1,0 +1,69 @@
+:root {
+  --bg: #0b1220;
+  --bg-2: #0f172a;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --primary: #22d3ee;
+  --primary-2: #60a5fa;
+  --card: #111827;
+  --border: #1f2937;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(34,211,238,.15), transparent 60%),
+              radial-gradient(900px 500px at 10% -10%, rgba(96,165,250,.12), transparent 60%),
+              var(--bg);
+}
+.container { max-width: 1040px; margin: 0 auto; padding: 24px; }
+
+.hero { position: relative; overflow: clip; }
+.hero .bg {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(96,165,250,.08));
+  filter: blur(60px); opacity: .7;
+}
+.hero h1 { font-size: clamp(28px, 4vw, 44px); margin: 32px 0 12px; font-weight: 800; letter-spacing: -0.02em; }
+.hero p { margin: 0 0 16px; color: var(--muted); font-size: 16px; }
+.actions { display: flex; gap: 12px; margin: 16px 0 8px; }
+.btn {
+  appearance: none; border: 1px solid var(--border); color: var(--bg);
+  background: linear-gradient(180deg, var(--primary), var(--primary-2));
+  padding: 10px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; cursor: pointer;
+  transition: transform .12s ease, filter .12s ease; display: inline-block;
+}
+.btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.btn:active { transform: translateY(0); }
+.btn.btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+.btn.btn-secondary:hover { background: rgba(255,255,255,.04); }
+
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin: 24px 0 64px; }
+.grid .card { grid-column: span 12; }
+@media(min-width: 720px) {
+  .grid .card { grid-column: span 4; }
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.card h2, .card h3 { margin: 0 0 10px; }
+.card p { margin: 0; color: var(--muted); }
+
+.footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  padding: 20px; text-align: center;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,.02));
+}
+
+pre { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--primary); }
+
+
+

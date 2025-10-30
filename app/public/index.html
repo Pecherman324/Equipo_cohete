@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CI/CD Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="container">
+        <h1>Pipeline CI/CD con Jenkins + Docker</h1>
+        <p>Build • Test • Push • Deploy — todo automatizado</p>
+        <div class="actions">
+          <a class="btn" href="/health" target="_blank" rel="noopener">Ver /health</a>
+          <button id="greetBtn" class="btn btn-secondary">Saludar</button>
+        </div>
+      </div>
+      <div class="bg"></div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Estado</h2>
+        <pre id="status">Esperando…</pre>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h3>Docker</h3>
+          <p>Contenedor ligero con Node.js 20 Alpine.</p>
+        </div>
+        <div class="card">
+          <h3>Jenkins</h3>
+          <p>Pipeline con stages de build, test, push y deploy.</p>
+        </div>
+        <div class="card">
+          <h3>GitHub Actions</h3>
+          <p>CI en cada push/PR y publicación en tags.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">Demo CI/CD • Express + Docker</footer>
+
+    <script>
+      const statusEl = document.getElementById('status');
+      const greetBtn = document.getElementById('greetBtn');
+
+      async function checkHealth() {
+        try {
+          const res = await fetch('/health');
+          const data = await res.json();
+          statusEl.textContent = JSON.stringify(data);
+        } catch (e) {
+          statusEl.textContent = 'No disponible';
+        }
+      }
+
+      async function greet() {
+        const res = await fetch('/api/greeting');
+        const data = await res.json();
+        alert(data.message);
+      }
+
+      greetBtn.addEventListener('click', greet);
+      checkHealth();
+    </script>
+  </body>
+  </html>
+
+
+
