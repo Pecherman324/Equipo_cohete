@@ -1,13 +1,23 @@
+# Configuración de Docker Compose para ejecución local y despliegue
 services:
+  # Servicio de la aplicación web
   web:
+    # Configuración de build: construir desde el Dockerfile
     build:
-      context: .
+      context: .           # Directorio base para el build
       dockerfile: Dockerfile
+    # Nombre de la imagen (configurable con variables de entorno, por defecto: latest)
     image: ${IMAGE_NAME:-jenkins-docker-ci-app}:${IMAGE_TAG:-latest}
+    
+    # Mapeo de puertos: puerto del host -> puerto del contenedor
     ports:
       - "3000:3000"
+    
+    # Variables de entorno del contenedor
     environment:
       - NODE_ENV=production
+    
+    # Política de reinicio: reiniciar siempre excepto cuando se detenga manualmente
     restart: unless-stopped
 
 

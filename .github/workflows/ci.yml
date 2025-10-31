@@ -1,54 +1,70 @@
+# Pipeline de CI/CD con GitHub Actions
 name: CI
 
+# Eventos que activan el workflow
 on:
+  # Ejecutar en push a cualquier rama
   push:
     branches: [ "**" ]
+  # Ejecutar en pull requests a cualquier rama
   pull_request:
     branches: [ "**" ]
+  # Permitir ejecución manual desde la interfaz de GitHub
   workflow_dispatch:
 
+# Jobs del workflow
 jobs:
+  # Job 1: Construir imagen y ejecutar tests
   build-test:
     runs-on: ubuntu-latest
     steps:
+      # Paso 1: Obtener el código del repositorio
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Paso 2: Configurar Docker Buildx (herramienta mejorada para builds)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Paso 3: Construir la imagen Docker (sin subirla)
       - name: Build image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: Dockerfile
-          push: false
-          tags: jenkins-docker-ci-app:test
+          context: .              # Directorio base para el build
+          file: Dockerfile        # Archivo Dockerfile a usar
+          push: false            # No subir la imagen al registry
+          tags: jenkins-docker-ci-app:test  # Tag temporal para tests
 
+      # Paso 4: Ejecutar tests unitarios dentro del contenedor
       - name: Run unit tests
         run: docker run --rm jenkins-docker-ci-app:test node --test --test-reporter=spec
 
+  # Job 2: Construir y publicar imagen (solo cuando se crea un tag)
   push-image:
-    needs: build-test
-    if: startsWith(github.ref, 'refs/tags/')
+    needs: build-test  # Esperar a que build-test termine exitosamente
+    if: startsWith(github.ref, 'refs/tags/')  # Solo ejecutar si es un tag
     runs-on: ubuntu-latest
     steps:
+      # Paso 1: Obtener el código del repositorio
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Paso 2: Login al registry de Docker usando secretos de GitHub
       - name: Log in to registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}    # URL del registry (ej: ghcr.io)
+          username: ${{ secrets.DOCKER_USERNAME }}     # Usuario del registry
+          password: ${{ secrets.DOCKER_PASSWORD }}     # Password o token del registry
 
+      # Paso 3: Construir y subir la imagen al registry
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: Dockerfile
-          push: true
+          context: .              # Directorio base para el build
+          file: Dockerfile        # Archivo Dockerfile a usar
+          push: true             # Subir la imagen al registry
+          # Tag completo: registry/nombre-imagen:tag (el tag es el nombre del tag de GitHub)
           tags: ${{ secrets.DOCKER_REGISTRY }}/jenkins-docker-ci-app:${{ github.ref_name }}
 
 
